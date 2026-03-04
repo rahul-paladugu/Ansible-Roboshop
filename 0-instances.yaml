@@ -42,6 +42,12 @@
           Environment: Dev
       loop: "{{ servers }}"
       register: ec2_output
-    - name: Print ec2_output
+    - name: Print private_ip
       ansible.builtin.debug:
-       msg: "{{ ec2_output }}"
+       msg: "{{ item.instances[0].private_ip_address }}"
+      loop: "{{ ec2_output }}"
+    - name: Print public_ip
+      ansible.builtin.debug:
+       msg: "{{ item.instances[0].public_ip_address }}"
+      loop: "{{ ec2_output }}"
+      when: item.item == "frontend"
