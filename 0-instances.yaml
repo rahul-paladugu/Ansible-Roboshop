@@ -48,10 +48,10 @@
        content: "{{ ec2_output | to_nice_json }}"
     - name: Print private_ip
       ansible.builtin.debug:
-       msg: "{{ item.results.instances[0].private_ip_address }}"
-      loop: "{{ ec2_output }}"
-    # - name: Print public_ip
-    #   ansible.builtin.debug:
-    #    msg: "{{ item.instances[0].public_ip_address }}"
-    #   loop: "{{ ec2_output }}"
-    #   when: item.item == "frontend"
+       msg: "{{ item.instances[0].private_ip_address }}"
+      loop: "{{ ec2_output.results }}"
+    - name: Print public_ip
+      ansible.builtin.debug:
+       msg: "{{ item.instances[0].public_ip_address }}"
+      loop: "{{ ec2_output.results }}"
+      when: item.item == "frontend"
