@@ -1,8 +1,8 @@
 - name: Ansible playbook to create instances and update r53 records
   hosts: local
   connection: local
-  -vars:
-    - servers: 
+  vars:
+    servers: 
       - mongodb
       - catalogue
       - redis
@@ -17,12 +17,15 @@
   tasks:
     - name: Create instances
       amazon.aws.ec2_instance:
-        name: {{ item }}
+        name: "{{ item }}"
         instance_type: t3.micro
-        security_group_ids: sg-03b441e0ba008f925
+        security_group: sg-03b441e0ba008f925
         image_id: ami-0220d79f3f480ecf5
         tags:
-          Name: {{ item }}
+          Name: "{{ item }}"
           Environment: Dev
-      loop: {{ servers }}
+      loop: "{{ servers }}"
       register: ec2_output
+    - name: Print ec2_output
+      ansible.builtin.debug:
+       msg: "{{ ec2_output }}"
