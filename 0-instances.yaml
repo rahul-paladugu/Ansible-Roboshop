@@ -42,12 +42,15 @@
           Environment: Dev
       loop: "{{ servers }}"
       register: ec2_output
-    - name: Print private_ip
+    - name: Print ec2_output
       ansible.builtin.debug:
-       msg: "{{ item.instances[0].private_ip_address }}"
-      loop: "{{ ec2_output }}"
-    - name: Print public_ip
-      ansible.builtin.debug:
-       msg: "{{ item.instances[0].public_ip_address }}"
-      loop: "{{ ec2_output }}"
-      when: item.item == "frontend"
+       msg: "{{ ec2_output }}"
+    # - name: Print private_ip
+    #   ansible.builtin.debug:
+    #    msg: "{{ item.instances[0].private_ip_address }}"
+    #   loop: "{{ ec2_output }}"
+    # - name: Print public_ip
+    #   ansible.builtin.debug:
+    #    msg: "{{ item.instances[0].public_ip_address }}"
+    #   loop: "{{ ec2_output }}"
+    #   when: item.item == "frontend"
