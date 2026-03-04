@@ -52,6 +52,6 @@
       loop: "{{ ec2_output.results }}"
     - name: Print public_ip
       ansible.builtin.debug:
-       msg: "{{ item.instances[0].public_ip_address }}"
+       msg: "Server name is {{ item.instances[0].tags.Name }}. IP adress is {{ item.instances[0].public_ip_address }}"
       loop: "{{ ec2_output.results }}"
       when: item.item == "frontend"
