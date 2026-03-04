@@ -46,10 +46,10 @@
       ansible.builtin.copy:
        dest: /home/ec2-user/ec2_output.json
        content: "{{ ec2_output | to_nice_json }}"
-    # - name: Print private_ip
-    #   ansible.builtin.debug:
-    #    msg: "{{ item.instances[0].private_ip_address }}"
-    #   loop: "{{ ec2_output }}"
+    - name: Print private_ip
+      ansible.builtin.debug:
+       msg: "{{ item.results.instances[0].private_ip_address }}"
+      loop: "{{ ec2_output }}"
     # - name: Print public_ip
     #   ansible.builtin.debug:
     #    msg: "{{ item.instances[0].public_ip_address }}"
