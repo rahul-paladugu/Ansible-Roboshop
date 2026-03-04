@@ -55,3 +55,14 @@
        msg: "Server name is {{ item.instances[0].tags.Name }}. IP adress is {{ item.instances[0].public_ip_address }}"
       loop: "{{ ec2_output.results }}"
       when: item.item == "frontend"
+    - name: Create r53 records
+      amazon.aws.route53:
+        state: present
+        zone: rscloudservices.icu
+        hosted_zone_id: Z0711084A6IKM873A3LI
+        record: "{{ item.instances[0].tags.Name }}.rscloudservices.icu"
+        type: A
+        ttl: 1
+        value: item.instances[0].private_ip_address
+        wait: true
+        loop: "{{ ec2_output.results }}"
