@@ -42,9 +42,10 @@
           Environment: Dev
       loop: "{{ servers }}"
       register: ec2_output
-    - name: Print ec2_output
-      ansible.builtin.debug:
-       msg: "{{ ec2_output }}"
+    - name: Save ec2_output to file
+      ansible.builtin.copy:
+       dest: /home/ec2-user/ec2_output.json
+       content: "{{ ec2_output | to_nice_json }}"
     # - name: Print private_ip
     #   ansible.builtin.debug:
     #    msg: "{{ item.instances[0].private_ip_address }}"
