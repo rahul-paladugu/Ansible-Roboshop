@@ -1,24 +1,24 @@
-- name: configure frontend
+- name: Configure frontend
   hosts: frontend
-  become: yes
+  become: true
   tasks:
-   - name: remove default nginx
+   - name: Remove default version of nginx
      ansible.builtin.command: dnf module disable nginx -y
 
-   - name: enable required nginx
+   - name: Enable required version of nginx
      ansible.builtin.command: dnf module enable nginx:1.24 -y
 
-   - name: install nginx
+   - name: Install nginx
      ansible.builtin.dnf:
        name: nginx
        state: present
 
-   - name: remove html default content
+   - name: Remove html default content
      ansible.builtin.file:
        path: /usr/share/nginx/html
        state: absent
 
-   - name: create html directory to copy code
+   - name: Create html directory to copy code
      ansible.builtin.file:
        path: /usr/share/nginx/html
        state: directory
