@@ -28,7 +28,7 @@
          - python3
          - python3-pip
         state: present
-    # Install dependency libraries
+    # Install dependency libraries to communicate with AWS
     - name: Install dependency_libraries
       become: yes
       ansible.builtin.pip:
@@ -58,12 +58,12 @@
     # Print Private IP's
     - name: Print private_ip
       ansible.builtin.debug:
-       msg: "Server name is {{ item.instances[0].tags.Name }}. IP adress is {{ item.instances[0].private_ip_address }}"
+       msg: "Server name is {{ item.instances[0].tags.Name }}. IP address is {{ item.instances[0].private_ip_address }}"
       loop: "{{ ec2_output.results }}"
     # Print Public IP's
     - name: Print public_ip
       ansible.builtin.debug:
-       msg: "Server name is {{ item.instances[0].tags.Name }}. IP adress is {{ item.instances[0].public_ip_address }}"
+       msg: "Server name is {{ item.instances[0].tags.Name }}. IP address is {{ item.instances[0].public_ip_address }}"
       loop: "{{ ec2_output.results }}"
       when: item.item == "frontend"
     # Create r53 records for all servers
