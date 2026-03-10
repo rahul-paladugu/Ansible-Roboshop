@@ -1,0 +1,72 @@
+- name: Dispatch configuration
+  hosts: dispatch
+  become: yes
+  tasks:
+   - name: Install golang
+     ansible.builtin.dnf:
+       name: golang
+       state: present
+
+   # Create system user
+   - name: Create system-user
+     ansible.builtin.user:
+       name: roboshop
+       comment: roboshop system user
+       shell: /sbin/nologin
+       create_home: yes
+# Safe to remove directory, because 2nd time if we run it will download freshly. no error if does not exist
+   - name: Remove app directory
+     ansible.builtin.file:
+      path: /app
+      state: absent
+   # Create app directory
+   - name: Create app directory
+     ansible.builtin.file:
+       path: /app
+       state: directory
+   # Delete existing downloaded code
+   - name: Delete dispatch file
+     ansible.builtin.file:
+      path: /tmp/dispatch.zip
+      state: absent
+   # Download fresh code to temp directory
+   - name: Download dispatch code
+     ansible.builtin.get_url:
+      url: https://roboshop-artifacts.s3.amazonaws.com/dispatch-v3.zip
+      dest: /tmp/dispatch.zip
+   # Unzip the code and move it to App directory.
+   - name: Unzip code and move to app directory
+     ansible.builtin.unarchive:
+      src: /tmp/dispatch.zip
+      dest: /app 
+      remote_src: yes
+   # Install code dependencies
+   - name: dependencies go-mod
+     ansible.builtin.shell: go mod init dispatch
+     args:
+       chdir: /app   
+   # Install code dependencies
+   - name: dependencies go-get
+     ansible.builtin.shell: go get
+     args:
+       chdir: /app  
+   # Install code dependencies
+   - name: dependencies go-build
+     ansible.builtin.shell: go build
+     args:
+       chdir: /app  
+
+   - name: Setup dispatch service
+     ansible.builtin.copy:
+       src: dispatch.service
+       dest: /etc/systemd/system/dispatch.service
+
+   - name: Daemon reload
+     ansible.builtin.systemd:
+       daemon_reload: yes
+
+   - name: Start and enable user
+     ansible.builtin.service:
+       name: dispatch
+       state: started
+       enabled: yes
