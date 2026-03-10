@@ -18,25 +18,39 @@
     - cryptography
     - PyMySQL
 
-  - name: create roboshop system user
+  - name: Create system-user
     ansible.builtin.user:
-      name: roboshop
-      comment: RoboShop System user
-      system: true
-      shell: /sbin/nologin
-      home: /app
-
-  - name: create app directory
+     name: roboshop
+     comment: roboshop system user
+     shell: /sbin/nologin
+     create_home: yes
+# Safe to remove directory, because 2nd time if we run it will download freshly. no error if does not exist
+  - name: Remove app directory
     ansible.builtin.file:
-      state: directory
-      path: /app
-
-  - name: download code
+     path: /app
+     state: absent
+  # Create app directory
+  - name: Create app directory
+    ansible.builtin.file:
+     path: /app
+     state: directory
+  # Delete existing downloaded code
+  - name: Delete shipping file
+    ansible.builtin.file:
+     path: /tmp/shipping.zip
+     state: absent
+  # Download fresh code to temp directory
+  - name: Download shipping code
+    ansible.builtin.get_url:
+     url: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip
+     dest: /tmp/shipping.zip
+  # unzip the code and move it to App directory.
+  - name: Unzip code and move to app directory
     ansible.builtin.unarchive:
-      src: https://roboshop-artifacts.s3.amazonaws.com/shipping-v3.zip 
-      dest: /app
-      remote_src: yes
-
+     src: /tmp/shipping.zip
+     dest: /app 
+     remote_src: yes
+  # unzip the code and move it to App directory.
   - name: install dependencies
     ansible.builtin.command: mvn clean package
     args:
