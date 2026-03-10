@@ -2,7 +2,7 @@
   hosts: mongodb
   become: true
   tasks:
-   # Copy mongod repositry
+   # Copy mongod repository
    - name: copy repo
      ansible.builtin.copy:
        src: mongo.repo
