@@ -2,13 +2,13 @@
   hosts: redis
   become: yes
   tasks:
-   - name: disable default redis version
+   - name: Disable default redis version
      ansible.builtin.command: dnf module disable redis -y
     
-   - name: enable required redis version
+   - name: Enable required redis version
      ansible.builtin.command: dnf module enable redis:7 -y
 
-   - name: install redis
+   - name: Install redis
      ansible.builtin.dnf:
        name: redis
        state: present
