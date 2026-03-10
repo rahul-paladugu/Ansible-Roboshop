@@ -42,7 +42,7 @@
       amazon.aws.ec2_instance:
         name: "{{ item }}"
         instance_type: "{{ instance_type }}"
-        security_group_ids:
+        security_groups:
           - "{{ security_group_id }}"
         image_id: "{{ image_id }}"
         tags:
